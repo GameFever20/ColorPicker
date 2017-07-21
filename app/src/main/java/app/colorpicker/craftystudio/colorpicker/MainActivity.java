@@ -1,5 +1,6 @@
 package app.colorpicker.craftystudio.colorpicker;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,12 +20,14 @@ import android.widget.Toast;
 
 import java.util.Random;
 
+import static app.colorpicker.craftystudio.colorpicker.R.id.fab;
 import static app.colorpicker.craftystudio.colorpicker.R.id.toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbar;
-    TextView toolbarTextview, statusbarTextview;
+    TextView toolbarTextview, statusbarTextview, fabTextview;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,48 +39,62 @@ public class MainActivity extends AppCompatActivity {
 
         statusbarTextview = (TextView) findViewById(R.id.statusbar_hexcode);
         toolbarTextview = (TextView) findViewById(R.id.toolbar_hexcode);
+        fabTextview = (TextView) findViewById(R.id.fab_hexcode);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //  Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
 
                 //random color for toolbar
-                Random rnd = new Random();
-                int randomcolor_toolbar = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+                Random rndToolbar = new Random();
+                int randomcolor_toolbar = Color.argb(255, rndToolbar.nextInt(256), rndToolbar.nextInt(256), rndToolbar.nextInt(256));
 
-                //randomcolor for statusbar
-                rnd = new Random();
-                int randomcolor_status = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+                //darker color for statusbar
+                //calling method
+                int randomcolor_status = manipulateColor(randomcolor_toolbar, 0.7f);
 
-                //call for changing color
-                randomcolor_status = manipulateColor(randomcolor_toolbar, 0.8f);
-                changeColor(randomcolor_toolbar, randomcolor_status);
+                //random color for fab
+                Random rndFab = new Random();
+                int randomcolor_fab = Color.argb(255, rndFab.nextInt(256), rndFab.nextInt(256), rndFab.nextInt(256));
+
+                changeColor(randomcolor_toolbar, randomcolor_status, randomcolor_fab);
 
 
             }
         });
+
     }
 
-    public void changeColor(int toolbarColor, int statusColor) {
-        toolbar.setBackgroundColor(toolbarColor);
+    public void changeColor(int toolbarColor, int statusColor, int fabColor) {
 
+        //setting colors
+        toolbar.setBackgroundColor(toolbarColor);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = MainActivity.this.getWindow();
             window.setStatusBarColor(statusColor);
         }
+        fab.setBackgroundTintList(ColorStateList.valueOf(fabColor));
 
+
+        //getting hexcode from colors
         String statusHex = Integer.toHexString(statusColor);
         String toolbarHex = Integer.toHexString(toolbarColor);
+        String fabHex = Integer.toHexString(fabColor);
 
+
+        //making visible
         toolbarTextview.setVisibility(View.VISIBLE);
         statusbarTextview.setVisibility(View.VISIBLE);
+        fabTextview.setVisibility(View.VISIBLE);
 
+        //setting textview with hexcode
         toolbarTextview.setText("#" + toolbarHex);
         statusbarTextview.setText("#" + statusHex);
-        Log.d("Hex", statusHex + "-" + toolbarHex);
+        fabTextview.setText("#" + fabHex);
+
+        Log.d("Hex", statusHex + "-" + toolbarHex + "-" + fabHex);
         //  Toast.makeText(MainActivity.this, "hexcode for toolbar " + toolbarHex, Toast.LENGTH_SHORT).show();
 
     }
@@ -129,5 +146,14 @@ public class MainActivity extends AppCompatActivity {
         android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", statusbarTextview.getText());
         clipboard.setPrimaryClip(clip);
         Toast.makeText(this, "StatusBar Code Copied", Toast.LENGTH_SHORT).show();
+    }
+
+
+    public void copyFabHexCode(View view) {
+        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(this.CLIPBOARD_SERVICE);
+        android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", fabTextview.getText());
+        clipboard.setPrimaryClip(clip);
+        Toast.makeText(this, "Fab color Code Copied", Toast.LENGTH_SHORT).show();
+
     }
 }

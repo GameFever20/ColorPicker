@@ -54,4 +54,24 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="fab Button color Hexcode -"
+        android:textSize="17sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/fab_hexcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:onClick="copyFabHexCode"
+        android:text="Fab color Hexcode -"
+        android:textColor="@color/colorAccent"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
 </LinearLayout>
