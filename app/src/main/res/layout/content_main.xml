@@ -29,6 +29,7 @@
         android:layout_margin="8dp"
         android:onClick="copyToolbarHexCode"
         android:text="Toolbar color Hexcode -"
+        android:textColor="@color/colorAccent"
         android:textSize="17sp"
         android:textStyle="bold"
         android:visibility="gone" />
@@ -48,6 +49,7 @@
         android:layout_margin="8dp"
         android:onClick="copyStatusHexCode"
         android:text="StatusBar color Hexcode -"
+        android:textColor="@color/colorAccent"
         android:textSize="17sp"
         android:textStyle="bold"
         android:visibility="gone" />
