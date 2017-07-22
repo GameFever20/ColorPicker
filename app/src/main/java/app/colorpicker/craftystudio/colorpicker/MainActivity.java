@@ -1,7 +1,11 @@
 package app.colorpicker.craftystudio.colorpicker;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IntegerRes;
@@ -11,12 +15,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.LoginFilter;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.madrapps.pikolo.HSLColorPicker;
+import com.madrapps.pikolo.listeners.SimpleColorSelectionListener;
 
 import java.util.Random;
 
@@ -28,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     TextView toolbarTextview, statusbarTextview, fabTextview;
     FloatingActionButton fab;
+
+    HSLColorPicker colorPicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +53,21 @@ public class MainActivity extends AppCompatActivity {
         toolbarTextview = (TextView) findViewById(R.id.toolbar_hexcode);
         fabTextview = (TextView) findViewById(R.id.fab_hexcode);
 
+        colorPicker = (HSLColorPicker) findViewById(R.id.coloPicker);
+        colorPicker.setColorSelectionListener(new SimpleColorSelectionListener() {
+            @Override
+            public void onColorSelected(int color) {
+                // Do whatever you want with the color
+                //imageView.getBackground().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+
+                //getting darker color of toolbar
+                int statuscolor = manipulateColor(color, 0.85f);
+
+                //setting status,toolbar,fabcolor
+                changeColor(color, statuscolor, color);
+            }
+        });
+
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -51,8 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 Random rndToolbar = new Random();
                 int randomcolor_toolbar = Color.argb(255, rndToolbar.nextInt(256), rndToolbar.nextInt(256), rndToolbar.nextInt(256));
 
-                //darker color for statusbar
-                //calling method
+                //calling method for getting darker toolbar color
                 int randomcolor_status = manipulateColor(randomcolor_toolbar, 0.7f);
 
                 //random color for fab
@@ -64,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
 
     }
 
@@ -155,5 +182,112 @@ public class MainActivity extends AppCompatActivity {
         clipboard.setPrimaryClip(clip);
         Toast.makeText(this, "Fab color Code Copied", Toast.LENGTH_SHORT).show();
 
+    }
+
+    public void enterToolBarHexcodeDialog(View view) {
+
+        final EditText manualHexcodeEdittext;
+
+        final Snackbar snackbar = Snackbar.make(view, "", Snackbar.LENGTH_LONG);
+        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+
+        // Inflate your custom view with an Edit Text
+        LayoutInflater objLayoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View snackView = objLayoutInflater.inflate(R.layout.custom_snakbar_layout, null); // custom_snac_layout is your custom xml
+
+
+        manualHexcodeEdittext = (EditText) snackView.findViewById(R.id.customsnack_addcode_edittext);
+        snackbar.setAction("ADD", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (manualHexcodeEdittext.getText().toString().isEmpty()) {
+                    Snackbar snackbar1 = Snackbar.make(view, "No color is inputted", Snackbar.LENGTH_SHORT);
+                    snackbar1.show();
+                } else {
+                    Snackbar snackbar1 = Snackbar.make(view, "Toolbar color is set", Snackbar.LENGTH_SHORT);
+                    //making visible
+                    toolbarTextview.setVisibility(View.VISIBLE);
+                    toolbarTextview.setText(manualHexcodeEdittext.getText().toString());
+                    toolbar.setBackgroundColor(Color.parseColor(manualHexcodeEdittext.getText().toString()));
+                    snackbar1.show();
+                }
+            }
+        });
+        layout.addView(snackView, 0);
+        snackbar.show();
+    }
+
+    public void enterStatusHexcodeDialog(View view) {
+
+        final EditText manualHexcodeEdittext;
+
+        final Snackbar snackbar = Snackbar.make(view, "", Snackbar.LENGTH_LONG);
+        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+
+        // Inflate your custom view with an Edit Text
+        LayoutInflater objLayoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View snackView = objLayoutInflater.inflate(R.layout.custom_snakbar_layout, null); // custom_snac_layout is your custom xml
+
+
+        manualHexcodeEdittext = (EditText) snackView.findViewById(R.id.customsnack_addcode_edittext);
+        snackbar.setAction("ADD", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (manualHexcodeEdittext.getText().toString().isEmpty()) {
+                    Snackbar snackbar1 = Snackbar.make(view, "No color is inputted", Snackbar.LENGTH_SHORT);
+                    snackbar1.show();
+                } else {
+                    Snackbar snackbar1 = Snackbar.make(view, "StatusBar color is set", Snackbar.LENGTH_SHORT);
+                    statusbarTextview.setVisibility(View.VISIBLE);
+                    statusbarTextview.setText(manualHexcodeEdittext.getText().toString());
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Window window = MainActivity.this.getWindow();
+                        window.setStatusBarColor(Color.parseColor(manualHexcodeEdittext.getText().toString()));
+                    } else {
+                        Toast.makeText(MainActivity.this, "Cannot change color in this android version", Toast.LENGTH_SHORT).show();
+                    }
+                    snackbar1.show();
+                }
+            }
+        });
+        layout.addView(snackView, 0);
+        snackbar.show();
+
+    }
+
+    public void enterFabHexcodeDialog(View view) {
+
+        final EditText manualHexcodeEdittext;
+
+        final Snackbar snackbar = Snackbar.make(view, "", Snackbar.LENGTH_LONG);
+        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+
+        // Inflate your custom view with an Edit Text
+        LayoutInflater objLayoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View snackView = objLayoutInflater.inflate(R.layout.custom_snakbar_layout, null); // custom_snac_layout is your custom xml
+
+
+        manualHexcodeEdittext = (EditText) snackView.findViewById(R.id.customsnack_addcode_edittext);
+        snackbar.setAction("ADD", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (manualHexcodeEdittext.getText().toString().isEmpty()) {
+                    Snackbar snackbar1 = Snackbar.make(view, "No color is inputted", Snackbar.LENGTH_SHORT);
+                    snackbar1.show();
+                } else {
+                    Snackbar snackbar1 = Snackbar.make(view, "Fab Button color is set", Snackbar.LENGTH_SHORT);
+                    snackbar1.show();
+                    //making visible
+                    fabTextview.setVisibility(View.VISIBLE);
+                    fabTextview.setText(manualHexcodeEdittext.getText().toString());
+                    fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(manualHexcodeEdittext.getText().toString())));
+                }
+            }
+        });
+        layout.addView(snackView, 0);
+        snackbar.show();
     }
 }
