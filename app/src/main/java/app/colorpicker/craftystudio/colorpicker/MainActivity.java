@@ -2,6 +2,7 @@ package app.colorpicker.craftystudio.colorpicker;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.LoginFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,8 +30,13 @@ import android.widget.Toast;
 import com.madrapps.pikolo.HSLColorPicker;
 import com.madrapps.pikolo.listeners.SimpleColorSelectionListener;
 
+import java.util.ArrayList;
 import java.util.Random;
 
+import utils.Detail;
+import utils.DetailDataSourceBridge;
+
+import static app.colorpicker.craftystudio.colorpicker.R.id.decor_content_parent;
 import static app.colorpicker.craftystudio.colorpicker.R.id.fab;
 import static app.colorpicker.craftystudio.colorpicker.R.id.toolbar;
 
@@ -40,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab;
 
     HSLColorPicker colorPicker;
+
+    ArrayList<Detail> mSavedColorsList;
+
+    Detail detail = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +101,19 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        //getting saved color for display from intent
+        try {
+            detail = (Detail) getIntent().getSerializableExtra("Detail");
+            if (detail != null) {
+                changeColor(Color.parseColor(detail.getPrimaryHexCode()),
+                        Color.parseColor(detail.getPrimaryDarkHexCode()),
+                        Color.parseColor(detail.getAccentHexCode()));
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -152,8 +176,23 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_save_color) {
+
+            DetailDataSourceBridge detailDataSourceBridge = new DetailDataSourceBridge(MainActivity.this);
+            detailDataSourceBridge.open();
+            Detail detail = detailDataSourceBridge.createColorObject(toolbarTextview.getText().toString(), statusbarTextview.getText().toString(), fabTextview.getText().toString());
+            Toast.makeText(MainActivity.this, "PrimaryDark code is-" + detail.getPrimaryHexCode(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Primary code is-" + detail.getPrimaryDarkHexCode(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Accent code is-" + detail.getAccentHexCode(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Id is" + detail.getId(), Toast.LENGTH_SHORT).show();
+
+
             return true;
+        } else if (id == R.id.action_get_saved_color) {
+            Intent intent = new Intent(MainActivity.this, SavedColorListActivity.class);
+            startActivity(intent);
+            // Toast.makeText(this, mSavedColorsList.get(1).getPrimaryHexCode(), Toast.LENGTH_SHORT).show();
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -188,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
 
         final EditText manualHexcodeEdittext;
 
-        final Snackbar snackbar = Snackbar.make(view, "", Snackbar.LENGTH_LONG);
+        final Snackbar snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
 
         // Inflate your custom view with an Edit Text
@@ -222,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
 
         final EditText manualHexcodeEdittext;
 
-        final Snackbar snackbar = Snackbar.make(view, "", Snackbar.LENGTH_LONG);
+        final Snackbar snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
 
         // Inflate your custom view with an Edit Text
@@ -261,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
 
         final EditText manualHexcodeEdittext;
 
-        final Snackbar snackbar = Snackbar.make(view, "", Snackbar.LENGTH_LONG);
+        final Snackbar snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
 
         // Inflate your custom view with an Edit Text
@@ -284,6 +323,7 @@ public class MainActivity extends AppCompatActivity {
                     fabTextview.setVisibility(View.VISIBLE);
                     fabTextview.setText(manualHexcodeEdittext.getText().toString());
                     fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(manualHexcodeEdittext.getText().toString())));
+
                 }
             }
         });
