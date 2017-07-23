@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ColorPicker</string>
+    <string name="app_name">Color Picker</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_saved_color_list">SavedColorListActivity</string>
+    <string name="title_activity_saved_color_list">Saved Color List</string>
 </resources>
