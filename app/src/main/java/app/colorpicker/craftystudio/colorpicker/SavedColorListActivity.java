@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import utils.ClickListener;
 import utils.ColorListAdapter;
@@ -44,13 +45,17 @@ public class SavedColorListActivity extends AppCompatActivity {
         detailDataSourceBridge.open();
         mSavedColorArraylist = detailDataSourceBridge.getAllSavedColors();
 
+
         Log.d("Size of all color List", mSavedColorArraylist.size() + "");
         Log.d("Saved data ", mSavedColorArraylist.get(1).getPrimaryHexCode());
 
+        //setting recyclerview
         colorListAdapter = new ColorListAdapter(mSavedColorArraylist, SavedColorListActivity.this);
         savedColorRecyclerview.setLayoutManager(mLayoutManager);
         savedColorRecyclerview.setAdapter(colorListAdapter);
 
+        //reversing the arraylist
+        Collections.reverse(mSavedColorArraylist);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -62,16 +67,17 @@ public class SavedColorListActivity extends AppCompatActivity {
         });
 
 
-       //Calling MAinActivity on Touch of recyclerview
+        //Calling MAinActivity on Touch of recyclerview
         savedColorRecyclerview.addOnItemTouchListener(new RecyclerTouchListener(SavedColorListActivity.this, savedColorRecyclerview, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
 
 
-                Intent intent=new Intent(SavedColorListActivity.this,MainActivity.class);
-                intent.putExtra("Detail",mSavedColorArraylist.get(position));
+                Intent intent = new Intent(SavedColorListActivity.this, MainActivity.class);
+                intent.putExtra("Detail", mSavedColorArraylist.get(position));
 
                 startActivity(intent);
+                finish();
 
             }
 

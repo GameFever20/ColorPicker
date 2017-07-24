@@ -244,12 +244,19 @@ public class MainActivity extends AppCompatActivity {
                     Snackbar snackbar1 = Snackbar.make(view, "No color is inputted", Snackbar.LENGTH_SHORT);
                     snackbar1.show();
                 } else {
-                    Snackbar snackbar1 = Snackbar.make(view, "Toolbar color is set", Snackbar.LENGTH_SHORT);
-                    //making visible
-                    toolbarTextview.setVisibility(View.VISIBLE);
-                    toolbarTextview.setText(manualHexcodeEdittext.getText().toString());
-                    toolbar.setBackgroundColor(Color.parseColor(manualHexcodeEdittext.getText().toString()));
-                    snackbar1.show();
+                    try {
+                        Snackbar snackbar1 = Snackbar.make(view, "Toolbar color is set", Snackbar.LENGTH_SHORT);
+                        //making visible
+                        toolbarTextview.setVisibility(View.VISIBLE);
+                        toolbarTextview.setText(manualHexcodeEdittext.getText().toString());
+                        toolbar.setBackgroundColor(Color.parseColor(manualHexcodeEdittext.getText().toString()));
+                        snackbar1.show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Snackbar snackbar1 = Snackbar.make(view, "Wrong Format inputted input as eg- #ffc115c", Snackbar.LENGTH_SHORT);
+                        snackbar1.show();
+                    }
+
                 }
             }
         });
@@ -278,16 +285,23 @@ public class MainActivity extends AppCompatActivity {
                     Snackbar snackbar1 = Snackbar.make(view, "No color is inputted", Snackbar.LENGTH_SHORT);
                     snackbar1.show();
                 } else {
-                    Snackbar snackbar1 = Snackbar.make(view, "StatusBar color is set", Snackbar.LENGTH_SHORT);
-                    statusbarTextview.setVisibility(View.VISIBLE);
-                    statusbarTextview.setText(manualHexcodeEdittext.getText().toString());
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Window window = MainActivity.this.getWindow();
-                        window.setStatusBarColor(Color.parseColor(manualHexcodeEdittext.getText().toString()));
-                    } else {
-                        Toast.makeText(MainActivity.this, "Cannot change color in this android version", Toast.LENGTH_SHORT).show();
+
+                    try {
+                        Snackbar snackbar1 = Snackbar.make(view, "StatusBar color is set", Snackbar.LENGTH_SHORT);
+                        statusbarTextview.setVisibility(View.VISIBLE);
+                        statusbarTextview.setText(manualHexcodeEdittext.getText().toString());
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            Window window = MainActivity.this.getWindow();
+                            window.setStatusBarColor(Color.parseColor(manualHexcodeEdittext.getText().toString()));
+                        } else {
+                            Toast.makeText(MainActivity.this, "Cannot change color in this android version", Toast.LENGTH_SHORT).show();
+                        }
+                        snackbar1.show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Snackbar snackbar1 = Snackbar.make(view, "Wrong Format inputted input as eg- #ffc115c", Snackbar.LENGTH_SHORT);
+                        snackbar1.show();
                     }
-                    snackbar1.show();
                 }
             }
         });
@@ -317,12 +331,20 @@ public class MainActivity extends AppCompatActivity {
                     Snackbar snackbar1 = Snackbar.make(view, "No color is inputted", Snackbar.LENGTH_SHORT);
                     snackbar1.show();
                 } else {
-                    Snackbar snackbar1 = Snackbar.make(view, "Fab Button color is set", Snackbar.LENGTH_SHORT);
-                    snackbar1.show();
-                    //making visible
-                    fabTextview.setVisibility(View.VISIBLE);
-                    fabTextview.setText(manualHexcodeEdittext.getText().toString());
-                    fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(manualHexcodeEdittext.getText().toString())));
+
+                    try {
+                        Snackbar snackbar1 = Snackbar.make(view, "Fab Button color is set", Snackbar.LENGTH_SHORT);
+                        snackbar1.show();
+                        //making visible
+                        fabTextview.setVisibility(View.VISIBLE);
+                        fabTextview.setText(manualHexcodeEdittext.getText().toString());
+                        fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(manualHexcodeEdittext.getText().toString())));
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Snackbar snackbar1 = Snackbar.make(view, "Wrong Format inputted input as eg- #ffc115c", Snackbar.LENGTH_SHORT);
+                        snackbar1.show();
+                    }
 
                 }
             }
