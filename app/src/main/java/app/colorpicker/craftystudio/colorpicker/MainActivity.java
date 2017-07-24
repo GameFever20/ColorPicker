@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,6 +33,8 @@ import com.madrapps.pikolo.listeners.SimpleColorSelectionListener;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import utils.Detail;
 import utils.DetailDataSourceBridge;
@@ -97,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 int randomcolor_fab = Color.argb(255, rndFab.nextInt(256), rndFab.nextInt(256), rndFab.nextInt(256));
 
                 changeColor(randomcolor_toolbar, randomcolor_status, randomcolor_fab);
+                colorPicker.setColor(randomcolor_toolbar);
 
 
             }
@@ -236,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         manualHexcodeEdittext = (EditText) snackView.findViewById(R.id.customsnack_addcode_edittext);
+        requestEdittextFocus(manualHexcodeEdittext);
         snackbar.setAction("ADD", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -270,6 +275,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         manualHexcodeEdittext = (EditText) snackView.findViewById(R.id.customsnack_addcode_edittext);
+        requestEdittextFocus(manualHexcodeEdittext);
         snackbar.setAction("ADD", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -309,6 +315,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         manualHexcodeEdittext = (EditText) snackView.findViewById(R.id.customsnack_addcode_edittext);
+        requestEdittextFocus(manualHexcodeEdittext);
         snackbar.setAction("ADD", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -329,5 +336,48 @@ public class MainActivity extends AppCompatActivity {
         });
         layout.addView(snackView, 0);
         snackbar.show();
+    }
+
+
+    public void requestEdittextFocus(EditText editText) {
+
+        editText.requestFocus();
+        try {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void selectToolBarColor(View view) {
+
+
+    }
+
+    public void selectStatusBarColor(View view) {
+
+    }
+
+    public void selectFabColor(View view) {
+
+    }
+
+
+    public void interstitialAdTimer(){
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                showAds();
+            }
+        }, 0, 30000);
+
+    }
+
+    private void showAds() {
+
+
     }
 }

@@ -42,6 +42,7 @@
                         android:layout_weight="1"
                         android:text="Toolbar color "
                         android:textSize="15sp"
+                        android:onClick="selectToolBarColor"
                         android:textStyle="normal" />
 
                     <TextView
@@ -89,6 +90,7 @@
                         android:layout_margin="2dp"
                         android:layout_weight="1"
                         android:text="StatusBar color"
+                        android:onClick="selectStatusBarColor"
                         android:textAlignment="textStart"
                         android:textSize="15sp"
                         android:textStyle="normal" />
@@ -137,6 +139,7 @@
                         android:layout_margin="2dp"
                         android:layout_weight="1"
                         android:text="Fab color"
+                        android:onClick="selectFabColor"
                         android:textAlignment="textStart"
                         android:textSize="14sp"
                         android:textStyle="normal" />
