@@ -47,7 +47,6 @@ public class SavedColorListActivity extends AppCompatActivity {
 
 
         Log.d("Size of all color List", mSavedColorArraylist.size() + "");
-        Log.d("Saved data ", mSavedColorArraylist.get(1).getPrimaryHexCode());
 
         //setting recyclerview
         colorListAdapter = new ColorListAdapter(mSavedColorArraylist, SavedColorListActivity.this);
