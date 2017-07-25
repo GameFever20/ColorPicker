@@ -14,6 +14,9 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -51,6 +54,7 @@ public class SavedColorListActivity extends AppCompatActivity {
 
             Snackbar snackbar1 = Snackbar.make(savedColorRecyclerview, "No color saved yet", Snackbar.LENGTH_SHORT);
 
+            snackbar1.show();
         }
         Log.d("Size of all color List", mSavedColorArraylist.size() + "");
 
@@ -92,6 +96,10 @@ public class SavedColorListActivity extends AppCompatActivity {
 
             }
         }));
+
+
+        AdView mAdView = (AdView) findViewById(R.id.banner_adView);
+        mAdView.loadAd(new AdRequest.Builder().build());
 
     }
 }

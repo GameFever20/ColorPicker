@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
     Detail detail = null;
     private InterstitialAd mInterstitialAd;
     private boolean pendingInterstitialAd = false;
+    Handler handler;
+    Runnable runnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,19 +130,33 @@ public class MainActivity extends AppCompatActivity {
                         Color.parseColor(detail.getPrimaryDarkHexCode()),
                         Color.parseColor(detail.getAccentHexCode()));
 
+                colorPicker.setColor(Color.parseColor(detail.getPrimaryHexCode()));
+
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        colorPicker.setColor(Color.parseColor("#d22f47"));
+
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId("ca-app-pub-8455191357100024/8548419923");
         initializeAds();
 
-        interstitialAdTimer();
+
+
+        //interstitialAdTimer(60000l);
 
     }
 
+@Override
+    protected void onResume(){
+        super.onResume();
+
+
+    interstitialAdTimer(50000l);
+
+    }
 
     public void changeColor(int toolbarColor, int statusColor, int fabColor) {
 
@@ -417,17 +433,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void interstitialAdTimer() {
+    public void interstitialAdTimer( long waitTill) {
         pendingInterstitialAd = false;
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //Do something after 100ms
 
-                pendingInterstitialAd = true;
-            }
-        }, 60000);
+
+
+        handler.removeCallbacks(runnable);
+        handler.postDelayed(runnable, waitTill);
+
+
 
     }
 
@@ -438,7 +452,7 @@ public class MainActivity extends AppCompatActivity {
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
 
-                interstitialAdTimer();
+                //interstitialAdTimer(60000l);
             } else {
                 reloadInterstitialAd();
 
@@ -484,6 +498,21 @@ public class MainActivity extends AppCompatActivity {
                 super.onAdImpression();
             }
         });
+
+
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                //Do something after 100ms
+
+                pendingInterstitialAd = true;
+
+
+            }
+        };
+
+        handler = new Handler();
+
     }
 
 
