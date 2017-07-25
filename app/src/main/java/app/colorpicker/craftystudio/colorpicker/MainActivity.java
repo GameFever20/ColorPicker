@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.IntegerRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -28,6 +29,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.madrapps.pikolo.HSLColorPicker;
 import com.madrapps.pikolo.listeners.SimpleColorSelectionListener;
 
@@ -41,6 +45,7 @@ import utils.DetailDataSourceBridge;
 
 import static app.colorpicker.craftystudio.colorpicker.R.id.decor_content_parent;
 import static app.colorpicker.craftystudio.colorpicker.R.id.fab;
+import static app.colorpicker.craftystudio.colorpicker.R.id.mini;
 import static app.colorpicker.craftystudio.colorpicker.R.id.toolbar;
 
 public class MainActivity extends AppCompatActivity {
@@ -54,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Detail> mSavedColorsList;
 
     Detail detail = null;
+    private InterstitialAd mInterstitialAd;
+    private boolean pendingInterstitialAd = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
                 colorPicker.setColor(randomcolor_toolbar);
 
 
+                showAds();
+
             }
         });
 
@@ -119,8 +130,14 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        initializeAds();
+
+        interstitialAdTimer();
 
     }
+
 
     public void changeColor(int toolbarColor, int statusColor, int fabColor) {
 
@@ -208,6 +225,8 @@ public class MainActivity extends AppCompatActivity {
         android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", toolbarTextview.getText());
         clipboard.setPrimaryClip(clip);
         Toast.makeText(this, "Toolbar Code Copied", Toast.LENGTH_SHORT).show();
+
+        showAds();
     }
 
     public void copyStatusHexCode(View view) {
@@ -216,6 +235,8 @@ public class MainActivity extends AppCompatActivity {
         android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", statusbarTextview.getText());
         clipboard.setPrimaryClip(clip);
         Toast.makeText(this, "StatusBar Code Copied", Toast.LENGTH_SHORT).show();
+
+        showAds();
     }
 
 
@@ -224,6 +245,8 @@ public class MainActivity extends AppCompatActivity {
         android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", fabTextview.getText());
         clipboard.setPrimaryClip(clip);
         Toast.makeText(this, "Fab color Code Copied", Toast.LENGTH_SHORT).show();
+
+        showAds();
 
     }
 
@@ -349,6 +372,8 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        showAds();
+
     }
 
     public void selectToolBarColor(View view) {
@@ -365,19 +390,75 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void interstitialAdTimer(){
-
-        new Timer().scheduleAtFixedRate(new TimerTask() {
+    public void interstitialAdTimer() {
+        pendingInterstitialAd = false;
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                showAds();
+                //Do something after 100ms
+
+                pendingInterstitialAd = true;
             }
-        }, 0, 30000);
+        }, 60000);
 
     }
 
     private void showAds() {
 
+        if (pendingInterstitialAd){
+
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+
+                interstitialAdTimer();
+            } else {
+                reloadInterstitialAd();
+
+                Log.d("TAG", "The interstitial wasn't loaded yet.");
+            }
+        }
+    }
+
+    private void reloadInterstitialAd() {
+
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
     }
+
+    private void initializeAds() {
+
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                reloadInterstitialAd();
+            }
+
+            @Override
+            public void onAdFailedToLoad(int i) {
+                super.onAdFailedToLoad(i);
+                reloadInterstitialAd();
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+            }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+            }
+        });
+    }
+
+
+
 }
