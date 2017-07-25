@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +47,11 @@ public class SavedColorListActivity extends AppCompatActivity {
         mSavedColorArraylist = detailDataSourceBridge.getAllSavedColors();
 
 
+        if(mSavedColorArraylist.size() == 0){
+
+            Snackbar snackbar1 = Snackbar.make(savedColorRecyclerview, "No color saved yet", Snackbar.LENGTH_SHORT);
+
+        }
         Log.d("Size of all color List", mSavedColorArraylist.size() + "");
 
         //setting recyclerview
@@ -75,6 +81,7 @@ public class SavedColorListActivity extends AppCompatActivity {
                 Intent intent = new Intent(SavedColorListActivity.this, MainActivity.class);
                 intent.putExtra("Detail", mSavedColorArraylist.get(position));
 
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
 
